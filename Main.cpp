@@ -1,47 +1,69 @@
 # include <Siv3D.hpp> // Siv3D v0.6.15
 
+
+class Player {
+	private:
+		double speed = 200.0;
+		double posX = 400;
+		bool isFacingRight = true;
+	public:
+		void update() {
+			if (KeyLeft.pressed())
+			{
+				posX = Max((posX - speed * Scene::DeltaTime()), 60.0);
+				isFacingRight = false;
+			}
+			if (KeyRight.pressed())
+			{
+				posX = Min((posX + speed * Scene::DeltaTime()), 740.0);
+				isFacingRight = true;
+			}
+		}
+		void draw(const Texture& texture) {
+			texture.scaled(0.75).mirrored(isFacingRight).drawAt(posX, 540);
+		}
+		const Circle getCircle() {
+			return Circle{ posX, 540, 50 };
+		}
+};
+
+class Falling_object {
+	private:
+		double posX = Random(0.0, 800.0);
+		double posY = 100;
+		double speed = 200.0;
+	public:
+		void update() {
+			posY += speed * Scene::DeltaTime();
+		}
+		void draw(const Texture& texture) {
+			texture.scaled(0.75).drawAt(posX, posY);				
+		}
+		const Circle getCircle() {
+			return Circle{ posX, posY, 50 };
+		}
+
+};
+
 void Main()
 {
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
-	const Texture dinasour{ U"🦖"_emoji };
-	const Texture meat{ U"🍖"_emoji };
 	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 	const Font emojiFont{ 48, Typeface::ColorEmoji };
 	font.addFallback(emojiFont);
+	const Texture dinasour{ U"🦖"_emoji };
+	const Texture meat{ U"🍖"_emoji };
 
-	double speed = 200.0;
-	double playerPosX = 400;
-	bool isPlayerFacingRight = true;
-	
-	double meatPosX = Random(0.0, 800.0);
-	double meatPosY = 100;
-	double meatspeed = 200.0;
+	Player player;
+	Falling_object falling_object;
 
 	while (System::Update())
 	{
-		meatPosY += meatspeed * Scene::DeltaTime();
-
-		if (KeyLeft.pressed())
-		{
-			playerPosX = Max((playerPosX - speed * Scene::DeltaTime()), 60.0);
-			isPlayerFacingRight = false;
-		}
-
-		if (KeyRight.pressed())
-		{
-			playerPosX = Min((playerPosX + speed * Scene::DeltaTime()), 740.0);
-			isPlayerFacingRight = true;
-		}
-
-		const Circle dinasour_circle{ playerPosX, 540,50 };
-		dinasour_circle.draw(ColorF{ 0.6, 0.8, 0.7 });
-		dinasour.scaled(0.75).mirrored(isPlayerFacingRight).drawAt(playerPosX, 540);
-
-		const Circle meat_circle{ meatPosX,meatPosY,50 };
-
-		if (!meat_circle.intersects(dinasour_circle)) {
-			meat_circle.draw(ColorF{ 0.6, 0.8, 0.7 });
-			meat.scaled(0.75).drawAt(meatPosX, meatPosY);
+		player.update();
+		player.draw(dinasour);
+		falling_object.update();
+		if (!falling_object.getCircle().intersects(player.getCircle())) {
+			falling_object.draw(meat);	
 		}
 	}
 }
