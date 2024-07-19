@@ -12,13 +12,13 @@ void Main()
 	double speed = 200.0;
 	double playerPosX = 400;
 	bool isPlayerFacingRight = true;
-
+	
+	double meatPosX = Random(0.0, 800.0);
 	double meatPosY = 100;
 	double meatspeed = 200.0;
 
 	while (System::Update())
 	{
-
 		meatPosY += meatspeed * Scene::DeltaTime();
 
 		if (KeyLeft.pressed())
@@ -34,15 +34,14 @@ void Main()
 		}
 
 		const Circle dinasour_circle{ playerPosX, 540,50 };
-        dinasour_circle.draw(ColorF{ 0.6, 0.8, 0.7 });
+		dinasour_circle.draw(ColorF{ 0.6, 0.8, 0.7 });
 		dinasour.scaled(0.75).mirrored(isPlayerFacingRight).drawAt(playerPosX, 540);
 
+		const Circle meat_circle{ meatPosX,meatPosY,50 };
 
-        const Circle meat_circle{ 100,meatPosY,50 };
-        
-        if (!meat_circle.intersects(dinasour_circle)) {
-            meat_circle.draw(ColorF{ 0.6, 0.8, 0.7 });
-            meat.scaled(0.75).drawAt(100, meatPosY);
-        }
+		if (!meat_circle.intersects(dinasour_circle)) {
+			meat_circle.draw(ColorF{ 0.6, 0.8, 0.7 });
+			meat.scaled(0.75).drawAt(meatPosX, meatPosY);
+		}
 	}
 }
