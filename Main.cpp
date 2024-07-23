@@ -55,15 +55,31 @@ void Main()
 	const Texture meat{ U"🍖"_emoji };
 
 	Player player;
-	Falling_object falling_object;
+	Falling_object falling_meat;
+
+	bool isGameStarted = false;
 
 	while (System::Update())
 	{
-		player.update();
-		player.draw(dinasour);
-		falling_object.update();
-		if (!falling_object.getCircle().intersects(player.getCircle())) {
-			falling_object.draw(meat);	
+
+		if (SimpleGUI::Button(U"Start!", Vec2{ 650, 500}, 100)) {
+			// 肉の落下と描画を始める
+			isGameStarted = true;
 		}
+
+		if (SimpleGUI::Button(U"Try Again", Vec2{ 650, 550}, 100)) {
+			// 肉を初期位置に戻して再度落下させる
+			falling_meat = Falling_object();
+		}
+
+		if (isGameStarted) {
+			player.update();
+			player.draw(dinasour);
+			falling_meat.update();
+			if (!falling_meat.getCircle().intersects(player.getCircle())) {
+				falling_meat.draw(meat);	
+			}
+		}
+
 	}
 }
