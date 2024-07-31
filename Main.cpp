@@ -60,6 +60,7 @@ void Main()
 	FallingObject fallingMeat{ 200.0, Random(0.0, 800.0), 100.0 };
 
 	bool isGameStarted = false;
+	bool isSuccess = false;	
 
 	while (System::Update())
 	{
@@ -72,6 +73,7 @@ void Main()
 		if (SimpleGUI::Button(U"Try Again", Vec2{ 650, 550}, 100)) {
 			// 肉を初期位置に戻して再度落下させる
 			fallingMeat = FallingObject{ 200.0, Random(0.0, 800.0), 100.0 };
+			isSuccess = false;
 		}
 
 		if (isGameStarted) {
@@ -80,6 +82,13 @@ void Main()
 			fallingMeat.update();
 			if (!fallingMeat.getCircle().intersects(player.getCircle())) {
 				fallingMeat.draw(meat);
+			}
+			if (fallingMeat.getCircle().intersects(player.getCircle())) {
+				font(U"Success!!").drawAt(400, 300, Palette::Black);
+				isSuccess = true;
+			}
+			if (!isSuccess && fallingMeat.getCircle().y > 600) {
+				font(U"Failure!!").drawAt(400, 300, Palette::Black);
 			}
 		}
 
