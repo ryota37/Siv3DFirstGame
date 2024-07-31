@@ -1,12 +1,13 @@
-# include <Siv3D.hpp> // Siv3D v0.6.15
-
+#include <Siv3D.hpp> // Siv3D v0.6.15
 
 class Player {
 	private:
-		double speed = 200.0;
-		double posX = 400;
+		double speed;
+		double posX;
 		bool isFacingRight = true;
 	public:
+		Player(double initialSpeed, double initialPosX)
+			: speed(initialSpeed), posX(initialPosX) {}
 		void update() {
 			if (KeyLeft.pressed())
 			{
@@ -27,22 +28,23 @@ class Player {
 		}
 };
 
-class Falling_object {
+class FallingObject {
 	private:
-		double posX = Random(0.0, 800.0);
-		double posY = 100;
-		double speed = 200.0;
+		double posX;
+		double posY;
+		double speed;
 	public:
+		FallingObject(double initialSpeed, double initialPosX, double initialPosY)
+			: speed(initialSpeed), posX(initialPosX), posY(initialPosY) {}
 		void update() {
 			posY += speed * Scene::DeltaTime();
 		}
 		void draw(const Texture& texture) {
-			texture.scaled(0.75).drawAt(posX, posY);				
+			texture.scaled(0.75).drawAt(posX, posY);
 		}
 		const Circle getCircle() {
 			return Circle{ posX, posY, 50 };
 		}
-
 };
 
 void Main()
@@ -54,8 +56,8 @@ void Main()
 	const Texture dinasour{ U"🦖"_emoji };
 	const Texture meat{ U"🍖"_emoji };
 
-	Player player;
-	Falling_object falling_meat;
+	Player player{ 200.0, 400.0 };
+	FallingObject fallingMeat{ 200.0, Random(0.0, 800.0), 100.0 };
 
 	bool isGameStarted = false;
 
@@ -69,15 +71,15 @@ void Main()
 
 		if (SimpleGUI::Button(U"Try Again", Vec2{ 650, 550}, 100)) {
 			// 肉を初期位置に戻して再度落下させる
-			falling_meat = Falling_object();
+			fallingMeat = FallingObject{ 200.0, Random(0.0, 800.0), 100.0 };
 		}
 
 		if (isGameStarted) {
 			player.update();
 			player.draw(dinasour);
-			falling_meat.update();
-			if (!falling_meat.getCircle().intersects(player.getCircle())) {
-				falling_meat.draw(meat);	
+			fallingMeat.update();
+			if (!fallingMeat.getCircle().intersects(player.getCircle())) {
+				fallingMeat.draw(meat);
 			}
 		}
 
