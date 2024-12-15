@@ -58,9 +58,10 @@ void Main()
 {
 	const Size windowSize{ 800, 600 };
 	Window::Resize(windowSize);
-	const Texture background{ U"example/windmill.png" };
+	const Texture background{ U"Resources/xmas.jpg" };
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
+	const Font minifont{ FontMethod::MSDF, 24, Typeface::Bold };
 	const Font emojiFont{ 48, Typeface::ColorEmoji };
 	font.addFallback(emojiFont);
 
@@ -84,16 +85,28 @@ void Main()
 		}
 		if (!isGameStarted) {
 			// ゲームのタイトルやロゴ画像みたいなのをここで表示したい
-			font(U"Press Enter to start!!").drawAt(400, 300);
+
+			if (isXmas) {
+				font(U"🎁 Present catcher 🎅").drawAt(400, 250);
+			}
+			else {
+				font(U"🍖 Meat catcher 🦖").drawAt(400, 250);
+			}
+			minifont(U"Press Enter to start!!").drawAt(400, 400);
 
 			// "Licenses" ボタンが押されたら
 			if (SimpleGUI::Button(U"Licenses", Vec2{ 20, 20 }))
 			{
+				// ライセンス情報を追加
+				LicenseManager::AddLicense({
+					.title = U"Background image of Xmas mode",
+					.copyright = U"フリー素材ぱくたそ",
+					.text = U"https://www.pakutaso.com" });
 				// ライセンス情報を表示
 				LicenseManager::ShowInBrowser();
 			}
 
-			if (SimpleGUI::Button(U"Xmas", Vec2{ 20, 60 }))
+			if (KeyX.down())
 			{
 				isXmas = !isXmas;
 			}
@@ -117,17 +130,23 @@ void Main()
 				isSuccess = true;
 			}
 			if (!isSuccess && fallingMeat.getCircle().y > 600) {
-				font(U"Failure!!").drawAt(400, 300, Palette::Black);
+				font(U"Failure!!").drawAt(400, 300);
 			}
 		}
 
 		if (isGameStarted && isSuccess) {
-			font(U"Success!!").drawAt(400, 300, Palette::Black);
+			font(U"Success!!").drawAt(400, 300);
 			fallingMeat.vanish(meat, Present, isXmas);
 			player.update();
 			player.draw(dinasour, Santa, isXmas);
 
 			if (KeyEnter.down()) {
+				isSuccess = false;
+			}
+		}
+		if (isGameStarted) {
+			if (KeySpace.down()) {
+				isGameStarted = false;
 				isSuccess = false;
 			}
 		}
