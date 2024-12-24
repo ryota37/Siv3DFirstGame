@@ -58,7 +58,7 @@ void Main()
 {
 	const Size windowSize{ 800, 600 };
 	Window::Resize(windowSize);
-	const Texture background{ U"Resources/xmas.jpg" };
+	const Texture background{ Resource(U"example/xmas.jpg") };
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 	const Font minifont{ FontMethod::MSDF, 24, Typeface::Bold };
@@ -135,7 +135,14 @@ void Main()
 		}
 
 		if (isGameStarted && isSuccess) {
-			font(U"Success!!").drawAt(400, 300);
+
+			if (isXmas) {
+				font(U"MerryChristmas!!").drawAt(400, 300);
+			}
+			else {
+				font(U"Success!!").drawAt(400, 300);
+			}
+
 			fallingMeat.vanish(meat, Present, isXmas);
 			player.update();
 			player.draw(dinasour, Santa, isXmas);
