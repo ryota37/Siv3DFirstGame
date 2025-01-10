@@ -1,0 +1,9 @@
+/App
+/Releases
+.editorconfig
+/Siv3DFirstGame.vcxproj
+/Siv3DFirstGame.vcxproj.filters
+/stdafx.cpp
+/stdafx.h
+/Siv3DFirstGame.sln
+/Siv3DFirstGame.vcxproj.user
